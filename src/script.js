@@ -3,8 +3,8 @@ function check(str, bracketsConfig) {
   str = [...str];
   
   let stack = []
-  let s =[]
-  let n = []
+  
+  
 
   if(str.length%2 > 0) {
     return false;
@@ -12,34 +12,37 @@ function check(str, bracketsConfig) {
   for(let i=0; i<str.length; i++) {
     let bracket = str[i];
 
-    if(str[i] === '|' && str[i+1] === '|') {
-      str.splice(i, i+1);
-    } else if(str[i] === '|') {
-      s.push(bracketsConfig[bracket])
-    } else if(bracket === '7' && str[i+1] === '7') {
-      str.splice(i, i+1);
-    } else if(bracket === '7') {
-      n.push(bracketsConfig[bracket]);
-    } else if(bracket === '8' && str[i+1] === '8') {
-      str.splice(i, i+1);
-    } else if(bracket === '8') {
-      n.push(bracketsConfig[bracket]);
+    if(bracket === '|' && !stack.includes('|')) {
+      stack.push(bracketsConfig[bracket])
+    } else if(bracket === '|' && stack.includes('|')) {
+      let index = stack.findIndex(item => item == '|');
+      console.log(index)
+      stack.splice(index, 1);
+    } else if(bracket === '7' && !stack.includes('7')) {
+      stack.push(bracketsConfig[bracket]);
+    } else if(bracket === '7' && stack.includes('7')) {
+      let ind = stack.findIndex(item => item == '7');
+      stack.splice(ind, 1);
+    }  else if(bracket === '8' && !stack.includes('8')) {
+      stack.push(bracketsConfig[bracket]);
+    } else if(bracket === '8' && stack.includes('8')) {
+      let el = stack.findIndex(item => item == '8');
+      stack.splice(el, 1);
     } else if(bracketsConfig[bracket]) {
       stack.push(bracketsConfig[bracket])
     } else {
-      if(bracket !== stack.pop()) {
+      if(stack.pop() === '|' || stack.pop() === '7' || stack.pop() === '8') {
+        return false;
+      } else if(bracket !== stack.pop()) {
         return false;
       } 
     }
 }}
 console.log(stack)
-console.log(s)
-console.log(n)
-return stack.length === 0 && s.length%2 === 0 && n.length%2 === 0;
+return stack.length === 0;
 }
 
 
-
-  str = '|(|)';
-  bracketsConfig =[['(', ')'], ['|', '|']];
+  str = '8888877878887777777888888887777777887887788788887887777777788888888887788888';
+  bracketsConfig = [['1', '2'], ['3', '4'], ['5', '6'], ['7', '7'], ['8', '8']];
   console.log(check(str, bracketsConfig));
